@@ -50,6 +50,9 @@ target=${target:-"./"}
 
 echo "Searching for assumptions under: $target"
 
+assumptions=$(git grep "^(# Assumption[\s\S]*?)(?:\n[^#])|^(# Assumption[\w\W]*$)")
+echo $assumptions
+
 echo "Writing assumptions log to: $filename"
 
 write_md_page > $filename
