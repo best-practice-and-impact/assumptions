@@ -11,5 +11,5 @@ Assumptions should be written inline in code using the format:
 # Assumption: Another assumption
 # Leaving an empty newline after
 # the previous one
-print("Code doesn't require a newline, but a non-assumption code comments do.")
+print("Code doesn't require a newline, but non-assumption code comments do.")
 ```
