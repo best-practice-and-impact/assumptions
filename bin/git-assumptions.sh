@@ -50,8 +50,16 @@ target=${target:-"./"}
 
 echo "Searching for assumptions under: $target"
 
-assumptions=$(git grep "^(# Assumption[\s\S]*?)(?:\n[^#])|^(# Assumption[\w\W]*$)")
-echo $assumptions
+# git grep doesn't work for multiline, so can only get file and first line
+assumptions=$(git grep '^# Assumption:(.*)' $target)
+
+# Struggling to get grep to lazy match, even using -P
+# grep -Eir '^# Assumption:(.*)((\n#.*)*)'
+
+# grep -rl '# Assumption:' search_here/ | xargs sed -E '/# Assumption:(.*)/,/(\n[^#]*)*/!d'
+
+# Could use sed if end of assumption is indicated
+# grep -rl '# Assumption:' search_here/ | xargs sed -E  '/# Assumption:(.*)/,/:end/!d'
 
 echo "Writing assumptions log to: $filename"
 

@@ -1,9 +1,9 @@
 # git-assumptions
-Git extension for generating an assumptions log from inline comments.
+Git extension for generating Markdown assumptions logs from inline comments.
 
 Assumptions should be written inline in code using the format:
 
-```
+```py
 # Assumption: Title of assumption
 # Detailed description
 # on next line or many
@@ -11,5 +11,5 @@ Assumptions should be written inline in code using the format:
 # Assumption: Another assumption
 # Leaving an empty newline after
 # the previous one
-print("But code doesn't require a newline")
+print("Code doesn't require a newline, but a non-assumption code comments do.")
 ```
