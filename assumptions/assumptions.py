@@ -142,7 +142,7 @@ def cli():
     args = parser.parse_args()
 
     log = AssumptionsLog(args.outfile)
-    assumptions = log.find_assumptions(args.path)
+    log.find_assumptions(args.path)
     log.write_log(args.template)
 
 
