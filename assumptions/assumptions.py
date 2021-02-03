@@ -6,22 +6,23 @@ import glob
 from pathlib import Path
 
 ASSUMPTIONS_PATTERN = (
-    "^# Assumption:\W?(.+$)\n"
-    "# Q(?:uality)?:\W?(.+$)\n"  # Allow Q and I short forms
-    "# I(?:mpact)?:\W?(.+$)\n"
-    "((?:.|\n)*?)^[^#]"  # Lazily match everything following, till there's a line that doesn't start with a comment
-)
+    # Get indentation level and Assumption title
+    r"^([ \t]*)# ?Assumption: ?(.+)\n"
+    # Short or long from RAG ratings
+    r"^\1# ?Q(?:uality)?: ?(.+)\n"
+    r"^\1# ?I(?:mpact)?: ?(.+)\n"
+    # Lazily match everything following, till there's a line that doesn't start
+    # with the same indent and comment
+    r"(\1#(?:.|\n)*?)^(?!\1#)"
 
-# ^[ \t]*# Assumption: ?(.+)\n^[ \t]*# Q(?:uality)?: ?(.+)\n^[ \t]*# I(?:mpact)?: ?(.+)\n((?:.|\n)*?)\n^[^#]
-# Backreference might help with indents?
-# https://regex101.com/r/YCLhaZ/1/
+)
 
 class AssumptionsLog:
     def __init__(self, log_file_path):
         self.assumptions = []
         self.caveats = []
         self.log_file_path = Path(log_file_path)
-        if not self.log_file.parent.exists():
+        if not self.log_file_path.parent.exists():
             raise FileNotFoundError(f"Path does not exist: {self.log_file.parent}")
 
     def find_assumptions(self, relative_search_path):
