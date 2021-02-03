@@ -1,0 +1,7 @@
+dist
+*.egg*
+docs/.doctrees
+.vscode/
+__pycache__
+*.pyc
+.DS_Store
