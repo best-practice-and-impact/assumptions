@@ -38,4 +38,7 @@ setup(
         "Topic :: Software Development :: Documentation",
         "Topic :: Text Processing",
     ],
+    entry_points = {
+        'console_scripts': ['assumptions=assumptions.assumptions:cli'],
+    }
 )
