@@ -19,5 +19,4 @@ Assumptions are RAG-rated according to the following definitions for quality and
 The log contains the following assumptions and caveats:
 
 { assumptions }
-
 { caveats }

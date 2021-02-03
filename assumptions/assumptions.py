@@ -14,10 +14,14 @@ ASSUMPTIONS_PATTERN = (
     r"^\1# ?I(?:mpact)?: ?(.+)\n"
     # Lazily match everything following, till there's a line that doesn't start
     # with the same indent and comment
-    r"(\1#(?:.|\n)*?)^(?!\1#)"
+    r"(\1# ?(?:.|\n)*?)^(?!\1#)"
 )
 
 class AssumptionsLog:
+    """
+    Stores assumptions log output path and assumptions and caveats that are
+    collected from code comments.
+    """
     
     def __init__(self, log_file_path: str):
         self.assumptions = []
@@ -52,33 +56,45 @@ class AssumptionsLog:
         else:
             assumptions_content = ""
             for idx, assumption in enumerate(self.assumptions):
+                detailed_description = re.sub(
+                            f"\n?{assumption[1][0]}#",  # Remove indentation and comment hash
+                            "",
+                            assumption[1][4]
+                            )
+                detailed_description = re.sub("[ ]{2,}", " ", detailed_description.strip())
                 assumptions_content += (
-                    "\n".join(
-                        f"### Assumption {idx + 1}: {assumption[1]}",
+                    "\n".join([
+                        f"### Assumption {idx + 1}: {assumption[1][1]}",
                         "",
-                        f"* **Quality**: {assumption[2]}",
-                        f"* **Impact**: {assumption[3]}",
+                        f"* Location: `{assumption[0]}`",  # Relative path to file
+                        f"* **Quality**: {assumption[1][2]}",
+                        f"* **Impact**: {assumption[1][3]}",
                         "",
-                        f"{assumption[4]}",
+                        f"{detailed_description}",
+                        "",
                         ""
-                        )
+                        ])
                 )
         if len(self.caveats) < 1:
             print("Warning: No caveats in log.")
             caveats_content = "Currently no caveats in this analysis."
         else:
+            # TODO: implement caveats pattern and logging
             caveats_content = ""
 
         with open(template, "r") as f:
             template_content = f.read()
         
+        # Could move these conversion mappings to classes for exensibility
         template_content = template_content.replace(
             "{ assumptions }",
-            assumptions_content)
+            assumptions_content
+            )
 
         template_content = template_content.replace(
             "{ caveats }",
-            caveats_content)
+            caveats_content
+            )
         
         print(f"Writing assumptions log to: {self.log_file_path}")
         with open(self.log_file_path, "w") as f:
