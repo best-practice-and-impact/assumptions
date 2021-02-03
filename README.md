@@ -2,12 +2,18 @@
 
 Generating Markdown assumptions logs from code comments. This command line tool is build in Python, but can be used to collect assumptions from any files that support hash (`#`) comments.
 
-## Usage
+## Installation and Usage
+
+The tool can currently be installed from GitHub:
+
+```sh
+pip install git+https://github.com/foster999/assumptions.git
+```
 
 Run the command line tool to generate help documentation:
 
 ```sh
-python assumptions.py -h
+assumptions -h
 ```
 
 ## Assumptions
