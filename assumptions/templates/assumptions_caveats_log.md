@@ -16,7 +16,9 @@ Assumptions are RAG-rated according to the following definitions for quality and
 
 ## Assumptions and caveats
 
-The log contains the following assumptions and caveats:
+Assumptions and caveats last updated: { current_date }
+
+This analysis contains the following assumptions and caveats:
 
 { assumptions }
 { caveats }
