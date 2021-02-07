@@ -2,6 +2,8 @@
 import argparse
 
 from assumptions.log import Log
+from assumptions.log_items import Assumption, Caveat
+
 
 
 def cli():
