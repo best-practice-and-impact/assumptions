@@ -39,6 +39,6 @@ setup(
         "Topic :: Text Processing",
     ],
     entry_points = {
-        'console_scripts': ['assumptions=assumptions.assumptions:cli'],
+        'console_scripts': ['assumptions=assumptions.cli:cli'],
     }
 )
