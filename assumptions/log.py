@@ -40,19 +40,20 @@ class Log:
                 "Log item must be a subclass of `assumptions.LogItem`")
         self.log_items.append(log_item)
 
-    def find_items(self, relative_search_path: str):
+    def find_items(self, relative_search_path: str, extension: str):
         """
-        Recursive directory search for each parser's ``search_pattern``.
-        Captures relative path to file.
+        Recursive directory search for each ``log_item``'s ``search_pattern``.
+        Optionally searches a specific file extension.
+        Captures relative path to file, in addition to each item.
         """
         if len(self.log_items) == 0:
-            raise ValueError("No parsers have been added to the Log.")
+            raise ValueError("No `log_items` have been added to the Log.")
 
         current_dir = Path(os.getcwd())
         search_path = (current_dir / relative_search_path).resolve()
         print(f"Searching for items under: {search_path}")
 
-        for path in [p for p in search_path.glob("**/*") if p.is_file()]:
+        for path in [p for p in search_path.glob("**/*" + extension) if p.is_file()]:
             try:
                 with path.open("r") as f:
                     file_contents = f.read()
@@ -61,7 +62,7 @@ class Log:
 
             for log_item in self.log_items:
                 for item in re.findall(log_item.search_pattern, file_contents, re.MULTILINE | re.IGNORECASE):
-                    log_item.matched_items.append(
+                    log_item.add_matched_item(
                         (path.relative_to(search_path.parent).as_posix(), item)
                     )
 
@@ -81,10 +82,10 @@ class Log:
         with open(template, "r") as f:
             template_content = f.read()
 
-        if "{ date }" in template_content:
+        if "{ current_date }" in template_content:
             template_content.replace(
-                "{ date }",
-                datetime.datetime.today().strftime(r"Y%/%m/%d")
+                "{ current_date }",
+                datetime.datetime.today().strftime("%Y/%m/%d")
             )
 
         for log_item in self.log_items:
@@ -104,7 +105,7 @@ class Log:
                 old_template_content = f.read()
 
             # Check if output has changed, other than dates
-            if old_template_content.replace(r"Y%/%m/%d", "") == template_content.replace(r"Y%/%m/%d", ""):
+            if old_template_content.replace(r"Y%/%m/%d", "") == template_content.replace("Y%/%m/%d", ""):
                 print("Warning: No change to log items, log not updated.")
                 return False
 

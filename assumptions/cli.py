@@ -25,12 +25,16 @@ def cli():
     parser.add_argument("-t", "--template", type=str, default=None,
                         help="path to a template assumptions log."
                         )
+    parser.add_argument("-e", "--extension", type=str, default="",
+                        help="file extension to search for. Searches all file"
+                        " extensions by default."
+                        )
     args = parser.parse_args()
 
     log = Log(args.outfile)
     log.add_log_item(Assumption)
     log.add_log_item(Caveat)
-    log.find_items(args.path)
+    log.find_items(args.path, args.extension)
     if not log.write_log(args.template):
         print("Nudge: Have you updated your assumptions and caveats?")
     else:

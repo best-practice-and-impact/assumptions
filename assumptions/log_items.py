@@ -3,14 +3,23 @@ import re
 
 
 class LogItem(ABC):
+    matched_items = []
+    parsed_items = []
 
     def __init__(self):
-        self.matched_items = []
-        self.parsed_items = []
+        pass
+    
+    @classmethod
+    def add_matched_item(cls, item):
+        cls.matched_items.append(item)
 
-    def parse_items(self):
-        self.parsed_items += [handler(item) for item in self.matched_items]
-        self.matched_items = []
+    @classmethod
+    def parse_items(cls):
+        cls.parsed_items += [
+            cls.parser(cls, idx, filepath, item) for idx, (filepath, item)
+            in enumerate(cls.matched_items)
+            ]
+        cls.matched_items = []
 
     @property
     @abstractmethod
