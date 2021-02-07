@@ -24,6 +24,12 @@ class LogItem(ABC):
         """The marker used for insertion into a template."""
         pass
 
+    @property
+    @abstractmethod
+    def empty_message(self):
+        """The text to be inserted into the log when no items are found."""
+        pass
+
     @abstractmethod
     def parser(self, idx, file_path, item):
         """
@@ -59,6 +65,7 @@ class Assumption(LogItem):
     )
 
     template_marker = "{ assumptions }"
+    empty_message = "Currently no assumptions in this analysis.\n"
 
     def parser(self, idx, file_path, item):
         detailed_description = re.sub(
@@ -99,6 +106,7 @@ class Caveat(LogItem):
     )
 
     template_marker = "{ caveats }"
+    empty_message = "Currently no caveats in this analysis.\n"
 
     def parser(self, idx, file_path, item):
         detailed_description = re.sub(
@@ -137,6 +145,7 @@ class Todo(LogItem):
     )
 
     template_marker = "{ todos }"
+    empty_message = "Currently no todo's.\n"
 
     def parser(self, idx, file_path, item):
         todo_item = re.sub(
