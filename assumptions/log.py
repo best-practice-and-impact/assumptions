@@ -85,7 +85,7 @@ class Log:
         if "{ current_date }" in template_content:
             template_content.replace(
                 "{ current_date }",
-                datetime.datetime.today().strftime("%Y/%m/%d")
+                datetime.datetime.today().strftime(r"%Y/%m/%d")
             )
 
         for log_item in self.log_items:
@@ -105,7 +105,7 @@ class Log:
                 old_template_content = f.read()
 
             # Check if output has changed, other than dates
-            if old_template_content.replace(r"Y%/%m/%d", "") == template_content.replace("Y%/%m/%d", ""):
+            if old_template_content.replace(r"%Y/%m/%d", "") == template_content.replace(r"%Y/%m/%d", ""):
                 print("Warning: No change to log items, log not updated.")
                 return False
 
