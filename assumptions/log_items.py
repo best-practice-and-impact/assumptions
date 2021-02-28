@@ -3,6 +3,10 @@ import re
 
 
 class LogItem(ABC):
+    """
+    Abstract Log Item class.
+    Defines the classes required by any new Log Item.
+    """
     matched_items = []
     parsed_items = []
 

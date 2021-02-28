@@ -35,8 +35,9 @@ def cli():
     log.add_log_item(Assumption)
     log.add_log_item(Caveat)
     log.find_items(args.path, args.extension)
+
     if not log.write_log(args.template):
-        print("Nudge: Have you updated your assumptions and caveats?")
+        print("\nNUDGE: Have you updated your assumptions and caveats?")
     else:
         print("Assumptions and caveats documented.")
 

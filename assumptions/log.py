@@ -30,35 +30,34 @@ class Log:
 
     def add_log_item(self, log_item: LogItem):
         """
-        Add a parser to the log. Parsers provide the regex pattern for searching
+        Add a Log Item parser to the log. Parsers provide the regex pattern for searching
         for items, the marker for insertion into templates and a handler method
         for parsing items before inserting them into the template.
         """
         if not issubclass(log_item, LogItem):
-            print(type(log_item))
             raise TypeError(
                 "Log item must be a subclass of `assumptions.LogItem`")
-        self.log_items.append(log_item)
+        self.log_items.append(log_item())
 
     def find_items(self, relative_search_path: str, extension: str):
         """
-        Recursive directory search for each ``log_item``'s ``search_pattern``.
+        Recursive directory search for each ``log_item`` ``search_pattern``.
         Optionally searches a specific file extension.
-        Captures relative path to file, in addition to each item.
+        Captures relative path to file containing item and item content.
         """
         if len(self.log_items) == 0:
             raise ValueError("No `log_items` have been added to the Log.")
 
         current_dir = Path(os.getcwd())
         search_path = (current_dir / relative_search_path).resolve()
-        print(f"Searching for items under: {search_path}")
+        print(f"Searching for log items under: {search_path}")
 
         for path in [p for p in search_path.glob("**/*" + extension) if p.is_file()]:
             try:
                 with path.open("r") as f:
                     file_contents = f.read()
             except:
-                raise FileReadError(f"File could not be read: {path}")
+                print(f"File could not be read, skipping: {path}")
 
             for log_item in self.log_items:
                 for item in re.findall(log_item.search_pattern, file_contents, re.MULTILINE | re.IGNORECASE):
@@ -68,14 +67,14 @@ class Log:
 
     def write_log(self, template: str):
         """
-        Write log to ``log_file_path``.
-        Inserts parsed items into markers in the specified template file.
+        Write log to instance ``log_file_path``.
+        Inserts matched items into markers in the specified template file.
         """
         for log_item in self.log_items:
             log_item.parse_items()
 
         if template is None:
-            # Default from package
+            # Default is assumptions and caveats from package
             template = pkg_resources.resource_filename(
                 "assumptions", "templates/assumptions_caveats_log.md"
             )
@@ -89,24 +88,25 @@ class Log:
             )
 
         for log_item in self.log_items:
+            log_item.parse_items()
             items = log_item.parsed_items
             if len(items) == 0:
                 print(
                     f"Warning: No {log_item.__class__.__name__} items found.")
                 items = [log_item.empty_message]
-
-            template_content.replace(
+            template_content = template_content.replace(
                 log_item.template_marker,
                 "\n".join(items)
             )
 
         if self.log_file_path.exists():
+            print("Log exists, checking for changes...")
             with open(self.log_file_path, "r") as f:
                 old_template_content = f.read()
 
             # Check if output has changed, other than dates
             if old_template_content.replace(r"%Y/%m/%d", "") == template_content.replace(r"%Y/%m/%d", ""):
-                print("Warning: No change to log items, log not updated.")
+                print("No change to log items, log not updated.")
                 return False
 
         print(f"Writing log to: {self.log_file_path}")
