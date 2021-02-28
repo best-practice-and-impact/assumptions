@@ -51,11 +51,9 @@ class LogItem(ABC):
     Base Log Item class. Subclasses must implement the abstract properties and
     ``parser`` method from the ``AbstractLogItem``.
     """
-    matched_items = []
-    parsed_items = []
-
     def __init__(self):
-        pass
+        self.matched_items = []
+        self.parsed_items = []
 
     def add_matched_item(self, item):
         self.matched_items.append(item)
