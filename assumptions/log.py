@@ -64,7 +64,6 @@ class Log:
                     log_item.add_matched_item(
                         (path.relative_to(search_path.parent).as_posix(), item)
                     )
-        print(f"{len(log_item.matched_items)} items matched")
 
     def write_log(self, template: str):
         """
@@ -86,7 +85,6 @@ class Log:
             )
 
         for log_item_type in self.log_item_types:
-            print(log_item_type.__class__.__name__)
             log_item_type.parse_items()
             items = log_item_type.parsed_items
 
@@ -96,7 +94,7 @@ class Log:
 
             template_content = template_content.replace(
                 log_item_type.template_marker,
-                "\n".join(items)
+                "\n".join(items).strip()
             )
 
         if self.log_file_path.exists():

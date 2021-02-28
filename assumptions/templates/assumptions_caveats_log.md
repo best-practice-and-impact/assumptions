@@ -4,7 +4,7 @@ This log contains a list of assumptions and caveats used in this analysis.
 
 ## Definitions
 
-Assumptions are RAG-rated (red, amber or green) according to the following definitions for quality and impact[^1]:
+Assumptions are red, amber or green (RAG) rated according to the following definitions for quality and impact[^1]:
 
 | RAG rating | Assumption quality | Assumption impact |
 |------------|--------------------|-------------------|
@@ -21,4 +21,5 @@ Assumptions and caveats last updated: { current_date }
 This analysis contains the following assumptions and caveats:
 
 { assumptions }
+
 { caveats }

@@ -68,7 +68,6 @@ class LogItem(ABC):
             in enumerate(self.matched_items)
         ]
         self.matched_items = []
-        print(f"{len(self.parsed_items)} items parsed")
 
 
 class Assumption(LogItem):
@@ -88,7 +87,6 @@ class Assumption(LogItem):
     empty_message = "Currently no assumptions in this analysis.\n"
 
     def parser(self, idx, file_path, item):
-        print(item)
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
             f"\n?{item[0]}#",
@@ -110,7 +108,6 @@ class Assumption(LogItem):
                 "",
                 f"{detailed_description}",
                 "",
-                ""
             ])
         )
         return assumptions_content
@@ -150,7 +147,6 @@ class Caveat(LogItem):
                 "",
                 f"{detailed_description}",
                 "",
-                ""
             ])
         )
         return caveat_content
