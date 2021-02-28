@@ -64,15 +64,13 @@ class Log:
                     log_item.add_matched_item(
                         (path.relative_to(search_path.parent).as_posix(), item)
                     )
+        print(f"{len(log_item.matched_items)} items matched")
 
     def write_log(self, template: str):
         """
         Write log to instance ``log_file_path``.
         Inserts matched items into markers in the specified template file.
         """
-        for log_item in self.log_items:
-            log_item.parse_items()
-
         if template is None:
             # Default is assumptions and caveats from package
             template = pkg_resources.resource_filename(
@@ -84,16 +82,17 @@ class Log:
         if "{ current_date }" in template_content:
             template_content = template_content.replace(
                 "{ current_date }",
-                datetime.datetime.today().strftime(r"%Y/%m/%d")
+                datetime.datetime.today().strftime(r"%d/%m/%Y")
             )
 
         for log_item in self.log_items:
             log_item.parse_items()
             items = log_item.parsed_items
+
             if len(items) == 0:
-                print(
-                    f"Warning: No {log_item.__class__.__name__} items found.")
+                print(f"Warning: No {log_item.__class__.__name__} items found.")
                 items = [log_item.empty_message]
+
             template_content = template_content.replace(
                 log_item.template_marker,
                 "\n".join(items)
@@ -105,7 +104,7 @@ class Log:
                 old_template_content = f.read()
 
             # Check if output has changed, other than dates
-            if old_template_content.replace(r"%Y/%m/%d", "") == template_content.replace(r"%Y/%m/%d", ""):
+            if old_template_content.replace(r"%d/%m/%Y", "") == template_content.replace(r"%d/%m/%Y", ""):
                 print("No change to log items, log not updated.")
                 return False
 
