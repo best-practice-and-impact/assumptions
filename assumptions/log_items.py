@@ -49,7 +49,7 @@ class AbstractLogItem(ABC):
 class LogItem(ABC):
     """
     Base Log Item class. Subclasses must implement the abstract properties and
-    methods from the ``AbstractLogItem``.
+    ``parser`` method from the ``AbstractLogItem``.
     """
     matched_items = []
     parsed_items = []
@@ -125,7 +125,8 @@ class Caveat(LogItem):
         r"^([ \t]*)# ?Caveat: ?(.+)\n"
         # Lazily match everything following, till there's a line that doesn't start
         # with the same indent and comment
-        r"(\1# ?(?:.|\n)*?)^(?!\1#)"
+        # This match is optional, as caveats might be one liners
+        r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
     )
 
     template_marker = "{ caveats }"
