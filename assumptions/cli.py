@@ -15,7 +15,7 @@ def cli():
     parser.add_argument("-o", "--outfile", type=str,
                         default="assumptions_caveats_log.md",
                         help="output Markdown (`.md`) file path. Default is "
-                        "'./assumptions_log.md'."
+                        "'./assumptions_caveats_log.md'."
                         )
     parser.add_argument("-p", "--path", type=str, default="",
                         help="relative path to directory to seach for"
@@ -39,7 +39,7 @@ def cli():
     if not log.write_log(args.template):
         print("\nNUDGE: Have you updated your assumptions and caveats?")
     else:
-        print("Assumptions and caveats documented.")
+        print("\nAssumptions and caveats documented.")
 
 
 if __name__ == "__main__":
