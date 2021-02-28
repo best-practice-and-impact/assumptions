@@ -82,7 +82,7 @@ class Log:
             template_content = f.read()
 
         if "{ current_date }" in template_content:
-            template_content.replace(
+            template_content = template_content.replace(
                 "{ current_date }",
                 datetime.datetime.today().strftime(r"%Y/%m/%d")
             )
