@@ -26,18 +26,18 @@ class Log:
             raise FileNotFoundError(
                 f"Output directory does not exist: {self.log_file.parent}")
 
-        self.log_items = []
+        self.log_item_types = []
 
-    def add_log_item(self, log_item: LogItem):
+    def add_log_item_type(self, log_item: LogItem):
         """
-        Add a Log Item parser to the log. Parsers provide the regex pattern for searching
+        Add a ``LogItem`` to the log. These parsers provide the regex pattern for searching
         for items, the marker for insertion into templates and a handler method
         for parsing items before inserting them into the template.
         """
         if not issubclass(log_item, LogItem):
             raise TypeError(
                 "Log item must be a subclass of `assumptions.LogItem`")
-        self.log_items.append(log_item())
+        self.log_item_types.append(log_item())
 
     def find_items(self, relative_search_path: str, extension: str):
         """
@@ -45,7 +45,7 @@ class Log:
         Optionally searches a specific file extension.
         Captures relative path to file containing item and item content.
         """
-        if len(self.log_items) == 0:
+        if len(self.log_item_types) == 0:
             raise ValueError("No `log_items` have been added to the Log.")
 
         current_dir = Path(os.getcwd())
@@ -59,7 +59,7 @@ class Log:
             except:
                 print(f"File could not be read, skipping: {path}")
 
-            for log_item in self.log_items:
+            for log_item in self.log_item_types:
                 for item in re.findall(log_item.search_pattern, file_contents, re.MULTILINE | re.IGNORECASE):
                     log_item.add_matched_item(
                         (path.relative_to(search_path.parent).as_posix(), item)
@@ -85,16 +85,17 @@ class Log:
                 datetime.datetime.today().strftime(r"%d/%m/%Y")
             )
 
-        for log_item in self.log_items:
-            log_item.parse_items()
-            items = log_item.parsed_items
+        for log_item_type in self.log_item_types:
+            print(log_item_type.__class__.__name__)
+            log_item_type.parse_items()
+            items = log_item_type.parsed_items
 
             if len(items) == 0:
-                print(f"Warning: No {log_item.__class__.__name__} items found.")
-                items = [log_item.empty_message]
+                print(f"Warning: No {log_item_type.__class__.__name__} items found.")
+                items = [log_item_type.empty_message]
 
             template_content = template_content.replace(
-                log_item.template_marker,
+                log_item_type.template_marker,
                 "\n".join(items)
             )
 

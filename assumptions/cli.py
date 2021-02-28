@@ -32,8 +32,8 @@ def cli():
     args = parser.parse_args()
 
     log = Log(args.outfile)
-    log.add_log_item(Assumption)
-    log.add_log_item(Caveat)
+    log.add_log_item_type(Assumption)
+    log.add_log_item_type(Caveat)
     log.find_items(args.path, args.extension)
 
     if not log.write_log(args.template):
