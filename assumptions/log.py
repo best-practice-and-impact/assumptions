@@ -104,7 +104,8 @@ class Log:
                 old_template_content = f.read()
 
             # Check if output has changed, other than dates
-            if old_template_content.replace(r"%d/%m/%Y", "") == template_content.replace(r"%d/%m/%Y", ""):
+            date_format = r"[0-9]{2}/[0-9]{2}/[0-9]{4}"
+            if re.sub(date_format, "", old_template_content) == re.sub(date_format, "", template_content):
                 print("No change to log items, log not updated.")
                 return False
 
