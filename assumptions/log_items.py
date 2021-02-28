@@ -2,29 +2,11 @@ from abc import ABC, abstractmethod
 import re
 
 
-class LogItem(ABC):
+class AbstractLogItem(ABC):
     """
     Abstract Log Item class.
     Defines the classes required by any new Log Item.
     """
-    matched_items = []
-    parsed_items = []
-
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def add_matched_item(cls, item):
-        cls.matched_items.append(item)
-
-    @classmethod
-    def parse_items(cls):
-        cls.parsed_items += [
-            cls.parser(cls, idx, filepath, item) for idx, (filepath, item)
-            in enumerate(cls.matched_items)
-            ]
-        cls.matched_items = []
-
     @property
     @abstractmethod
     def search_pattern(self):
@@ -64,6 +46,33 @@ class LogItem(ABC):
         pass
 
 
+class LogItem(ABC):
+    """
+    Base Log Item class. Subclasses must implement the abstract properties and
+    methods from the ``AbstractLogItem``.
+    """
+    matched_items = []
+    parsed_items = []
+
+    def __init__(self):
+        pass
+
+    def add_matched_item(self, item):
+        self.matched_items.append(item)
+
+    def parse_items(self):
+        """
+        Parse each matched item into a string, ready to be inserted into output
+        content.
+        """
+        self.parsed_items += [
+            self.parser(idx, filepath, item) for idx, (filepath, item)
+            in enumerate(self.matched_items)
+        ]
+        self.matched_items = []
+        print(f"{len(self.parsed_items)} items parsed")
+
+
 class Assumption(LogItem):
 
     search_pattern = (
@@ -81,6 +90,7 @@ class Assumption(LogItem):
     empty_message = "Currently no assumptions in this analysis.\n"
 
     def parser(self, idx, file_path, item):
+        print(item)
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
             f"\n?{item[0]}#",
