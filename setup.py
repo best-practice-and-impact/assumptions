@@ -8,7 +8,7 @@ with open("README.md") as readme:
 setup(
     name="assumptions",
     version="0.0.1",
-    description="Generating Markdown assumptions logs from code comments",
+    description="Generating Markdown assumptions logs from code comments.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="David Foster",
@@ -24,6 +24,11 @@ setup(
             "pytest-cov",
             "pytest-regressions",
         ],
+        "docs": [
+            "sphinx",
+            "sphinx-typlog-theme",
+        ]
+        
     },
     classifiers=[
         "Intended Audience :: Developers",
