@@ -1,8 +1,5 @@
 # Assumptions
 
-> Your assumptions are your windows on the world. Scrub them off every once in a while, or the light won't come in.  
-> -- Isaac Asimov
-
 Acknowledging the assumptions and caveats in our analysis is an essential part of quality assurance.
 When the code changes, this should be reflected in our documentation.
 
