@@ -33,12 +33,13 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python",
         "Topic :: Documentation",
         "Topic :: Software Development :: Documentation",
         "Topic :: Text Processing",
     ],
     entry_points = {
-        'console_scripts': ['assumptions=assumptions.assumptions:cli'],
+        'console_scripts': ['assumptions=assumptions.cli:cli'],
     }
 )
