@@ -18,7 +18,7 @@ class Log:
     Carries out file search and carried out marker replacement in templates.
     """
 
-    def __init__(self, log_file_path: str):
+    def __init__(self, log_type: str, log_file_path: str):
         self.assumptions = []
         self.caveats = []
         self.log_file_path = Path(log_file_path)
@@ -27,6 +27,10 @@ class Log:
                 f"Output directory does not exist: {self.log_file.parent}")
 
         self.log_item_types = []
+
+        self.builtin_template = pkg_resources.resource_filename(
+                "assumptions", f"templates/{log_type}.md"
+            )
 
     def add_log_item_type(self, log_item: LogItem):
         """
@@ -72,9 +76,7 @@ class Log:
         """
         if template is None:
             # Default is assumptions and caveats from package
-            template = pkg_resources.resource_filename(
-                "assumptions", "templates/assumptions_caveats_log.md"
-            )
+            template = self.builtin_template
         with open(template, "r") as f:
             template_content = f.read()
 

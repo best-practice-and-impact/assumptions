@@ -120,7 +120,7 @@ class Caveat(LogItem):
         r"^([ \t]*)# ?Caveat: ?(.+)\n"
         # Lazily match everything following, till there's a line that doesn't start
         # with the same indent and comment
-        # This match is optional, as caveats might be one liners
+        # Long description is optional, as caveats might be one liners
         r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
     )
 
@@ -156,22 +156,23 @@ class Todo(LogItem):
 
     search_pattern = (
         # Get indentation level
-        r"^([ \t]*)# ?TODO: ?"
+        r"^([ \t]*)# ?TODO: (.+)\n?"
         # Lazily match everything following, till there's a line that doesn't start
         # with the same indent and comment
-        r"((.+)\n\1# ?(?:.|\n)*?)^(?!\1#)"
+        # Long description is optional, as todos are often one liners
+        r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
     )
 
     template_marker = "{ todos }"
-    empty_message = "Currently no todo's.\n"
+    empty_message = "Great, there's nothing to do!\n"
 
     def parser(self, idx, file_path, item):
-        todo_item = re.sub(
+        todo_item = item[1] + re.sub(
             # Remove indentation and comment hash from todo item
             f"\n?{item[0]}#",
             "",
-            item[1]
-        )
+            item[2]
+        ) 
         todo_item = re.sub(
             # Reduce whitespace to single spaces and strip
             "[ ]{2,}", " ", todo_item.strip())
