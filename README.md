@@ -63,12 +63,14 @@ Assumptions can be written in code files using the following formats:
 # Q and I can be used for shorthand RAG ratings.
 print("Code doesn't require a newline")
 
+for something in things:
     # Assumption: Yet another assumption
     # Q: RED
     # I: GREEN
     # Indented? No problem.
 
     # But non-assumption comments do require an empty newline.
+    do(something)
 ```
 Assumptions are rated red, amber or green (RAG) to record the quality and risk associated with each assumption:
 
