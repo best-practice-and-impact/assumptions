@@ -116,7 +116,7 @@ Leaving an empty newline after the previous one. Q and I can be used for shortha
 
 Indented? No problem.
 
-### Caveat 1: Bad stuff
+### Caveat 1: Oh oh
 
 Location: `test_git_assumptions/search_here/caveats.py`
 
