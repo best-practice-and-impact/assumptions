@@ -120,7 +120,7 @@ Indented? No problem.
 
 Location: `test_git_assumptions/search_here/caveats.py`
 
-Something isn't quite what it seems A
+Something isn't quite what it seems
 ```
 
 ## Extensibility
