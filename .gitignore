@@ -5,4 +5,4 @@ docs/.doctrees
 __pycache__
 *.pyc
 .DS_Store
-/build
+build
