@@ -23,12 +23,7 @@ setup(
             "pytest>=3.6,<4",
             "pytest-cov",
             "pytest-regressions",
-        ],
-        "docs": [
-            "sphinx",
-            "sphinx-typlog-theme",
-        ]
-        
+        ],       
     },
     classifiers=[
         "Intended Audience :: Developers",
