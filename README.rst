@@ -13,6 +13,9 @@ assumptions
     :target: https://assumptions.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+Overview
+--------
+
 Acknowledging the assumptions and caveats in our analysis is an essential part of quality assurance.
 When the code changes, this should be reflected in our documentation.
 
@@ -39,8 +42,8 @@ Assumptions will generate a Markdown assumptions logs for your documentation:
 
     Detailed description on one line or many.
 
-
-## Installation and Usage
+Installation and Usage
+----------------------
 
 The Python package can currently be installed from GitHub:
 
