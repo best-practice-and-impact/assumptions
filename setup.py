@@ -1,5 +1,3 @@
-from os import path
-import re
 from setuptools import setup
 
 with open("README.md") as readme:
@@ -23,7 +21,7 @@ setup(
             "pytest>=3.6,<4",
             "pytest-cov",
             "pytest-regressions",
-        ],       
+        ],
     },
     classifiers=[
         "Intended Audience :: Developers",
@@ -39,7 +37,7 @@ setup(
         "Topic :: Software Development :: Documentation",
         "Topic :: Text Processing",
     ],
-    entry_points = {
-        'console_scripts': ['assumptions=assumptions.cli:cli'],
-    }
+    entry_points={
+        "console_scripts": ["assumptions=assumptions.cli:cli"],
+    },
 )
