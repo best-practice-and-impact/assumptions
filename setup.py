@@ -23,15 +23,12 @@ def read_requirements(file):
         return f.read().splitlines()
 
 
-with open("README.md") as readme:
-    long_description = readme.read()
-
 setup(
     name="assumptions",
     version=version,
     description="Generating Markdown assumptions logs from code comments.",
-    long_description=open("README.md").read(),
-    long_description_content_type="text/markdown",
+    long_description=Path("./README.rst").read_text(encoding="utf8"),
+    long_description_content_type="text/x-rst",
     author="David Foster",
     author_email="foster.dev999@gmail.com",
     packages=["assumptions"],
