@@ -1,6 +1,18 @@
 assumptions
 ===========
 
+.. image:: https://badge.fury.io/py/assumptions.svg
+    :target: https://badge.fury.io/py/assumptions
+    :alt: PyPI release
+
+.. image:: https://github.com/foster999/assumptions/workflows/tests/badge.svg
+    :target: https://github.com/foster999/assumptions/actions
+    :alt: Actions build status
+    
+.. image:: https://readthedocs.org/projects/assumptions/badge/?version=latest
+    :target: https://assumptions.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 Acknowledging the assumptions and caveats in our analysis is an essential part of quality assurance.
 When the code changes, this should be reflected in our documentation.
 
