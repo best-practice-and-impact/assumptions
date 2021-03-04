@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod
 import re
+from abc import ABC
+from abc import abstractmethod
 
 
 class AbstractLogItem(ABC):
@@ -7,6 +8,7 @@ class AbstractLogItem(ABC):
     Abstract Log Item class.
     Defines the classes required by any new Log Item.
     """
+
     @property
     @abstractmethod
     def search_pattern(self):
@@ -51,6 +53,7 @@ class LogItem(ABC):
     Base Log Item class. Subclasses must implement the abstract properties and
     ``parser`` method from the ``AbstractLogItem``.
     """
+
     def __init__(self):
         self.matched_items = []
         self.parsed_items = []
@@ -64,8 +67,8 @@ class LogItem(ABC):
         content.
         """
         self.parsed_items += [
-            self.parser(idx, filepath, item) for idx, (filepath, item)
-            in enumerate(self.matched_items)
+            self.parser(idx, filepath, item)
+            for idx, (filepath, item) in enumerate(self.matched_items)
         ]
         self.matched_items = []
 
@@ -91,14 +94,17 @@ class Assumption(LogItem):
             # Remove indentation and comment hash from detailed description
             f"\n?{item[0]}#",
             "",
-            item[4]
+            item[4],
         )
         detailed_description = re.sub(
             # Reduce whitespace to single spaces and strip
-            "[ ]{2,}", " ", detailed_description.strip())
+            "[ ]{2,}",
+            " ",
+            detailed_description.strip(),
+        )
 
-        assumptions_content = (
-            "\n".join([
+        assumptions_content = "\n".join(
+            [
                 f"### Assumption {idx + 1}: {item[1]}",
                 "",
                 # Relative path to file
@@ -108,7 +114,7 @@ class Assumption(LogItem):
                 "",
                 f"{detailed_description}",
                 "",
-            ])
+            ],
         )
         return assumptions_content
 
@@ -132,14 +138,17 @@ class Caveat(LogItem):
             # Remove indentation and comment hash from detailed description
             f"\n?{item[0]}#",
             "",
-            item[2]
+            item[2],
         )
         detailed_description = re.sub(
             # Reduce whitespace to single spaces and strip
-            "[ ]{2,}", " ", detailed_description.strip())
+            "[ ]{2,}",
+            " ",
+            detailed_description.strip(),
+        )
 
-        caveat_content = (
-            "\n".join([
+        caveat_content = "\n".join(
+            [
                 f"### Caveat {idx + 1}: {item[1]}",
                 "",
                 # Relative path to file
@@ -147,7 +156,7 @@ class Caveat(LogItem):
                 "",
                 f"{detailed_description}",
                 "",
-            ])
+            ],
         )
         return caveat_content
 
@@ -171,10 +180,13 @@ class Todo(LogItem):
             # Remove indentation and comment hash from todo item
             f"\n?{item[0]}#",
             "",
-            item[2]
-        ) 
+            item[2],
+        )
         todo_item = re.sub(
             # Reduce whitespace to single spaces and strip
-            "[ ]{2,}", " ", todo_item.strip())
+            "[ ]{2,}",
+            " ",
+            todo_item.strip(),
+        )
 
         return f"- [ ] {todo_item}"

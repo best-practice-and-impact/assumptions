@@ -1,9 +1,8 @@
+import datetime
 import os
 import re
-import sys
-import glob
-import datetime
 from pathlib import Path
+
 import pkg_resources
 
 from assumptions.log_items import LogItem
@@ -24,13 +23,15 @@ class Log:
         self.log_file_path = Path(log_file_path)
         if not self.log_file_path.parent.exists():
             raise FileNotFoundError(
-                f"Output directory does not exist: {self.log_file.parent}")
+                f"Output directory does not exist: {self.log_file.parent}",
+            )
 
         self.log_item_types = []
 
         self.builtin_template = pkg_resources.resource_filename(
-                "assumptions", f"templates/{log_type}.md"
-            )
+            "assumptions",
+            f"templates/{log_type}.md",
+        )
 
     def add_log_item_type(self, log_item: LogItem):
         """
@@ -40,7 +41,8 @@ class Log:
         """
         if not issubclass(log_item, LogItem):
             raise TypeError(
-                "Log item must be a subclass of `assumptions.LogItem`")
+                "Log item must be a subclass of `assumptions.LogItem`",
+            )
         self.log_item_types.append(log_item())
 
     def find_items(self, relative_search_path: str, extension: str):
@@ -60,13 +62,17 @@ class Log:
             try:
                 with path.open("r") as f:
                     file_contents = f.read()
-            except:
+            except FileReadError:
                 print(f"File could not be read, skipping: {path}")
 
             for log_item in self.log_item_types:
-                for item in re.findall(log_item.search_pattern, file_contents, re.MULTILINE | re.IGNORECASE):
+                for item in re.findall(
+                    log_item.search_pattern,
+                    file_contents,
+                    re.MULTILINE | re.IGNORECASE,
+                ):
                     log_item.add_matched_item(
-                        (path.relative_to(search_path.parent).as_posix(), item)
+                        (path.relative_to(search_path.parent).as_posix(), item),
                     )
 
     def write_log(self, template: str):
@@ -83,7 +89,7 @@ class Log:
         if "{ current_date }" in template_content:
             template_content = template_content.replace(
                 "{ current_date }",
-                datetime.datetime.today().strftime(r"%d/%m/%Y")
+                datetime.datetime.today().strftime(r"%d/%m/%Y"),
             )
 
         for log_item_type in self.log_item_types:
@@ -96,7 +102,7 @@ class Log:
 
             template_content = template_content.replace(
                 log_item_type.template_marker,
-                "\n".join(items).strip()
+                "\n".join(items).strip(),
             )
 
         if self.log_file_path.exists():
@@ -106,7 +112,11 @@ class Log:
 
             # Check if output has changed, other than dates
             date_format = r"[0-9]{2}/[0-9]{2}/[0-9]{4}"
-            if re.sub(date_format, "", old_template_content) == re.sub(date_format, "", template_content):
+            if re.sub(date_format, "", old_template_content) == re.sub(
+                date_format,
+                "",
+                template_content,
+            ):
                 print("No change to log items, log not updated.")
                 return False
 

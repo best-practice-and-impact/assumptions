@@ -1,0 +1,4 @@
+assumptions
+sphinx
+pydata-sphinx-theme
+jupyter_sphinx
