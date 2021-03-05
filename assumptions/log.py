@@ -5,11 +5,20 @@ from pathlib import Path
 
 import pkg_resources
 
+from assumptions.log_items import Assumption
+from assumptions.log_items import Caveat
 from assumptions.log_items import LogItem
+from assumptions.log_items import Todo
 
 
 class FileReadError(Exception):
     pass
+
+
+_BUILTIN_ITEM_TYPES = {
+    "assumptions_caveats_log": [Assumption, Caveat],
+    "todo_list": [Todo],
+}
 
 
 class Log:
@@ -23,10 +32,17 @@ class Log:
         self.log_file_path = Path(log_file_path)
         if not self.log_file_path.parent.exists():
             raise FileNotFoundError(
-                f"Output directory does not exist: {self.log_file.parent}",
+                f"Output directory does not exist: {self.log_file_path.parent}",
             )
 
         self.log_item_types = []
+
+        if log_type not in _BUILTIN_ITEM_TYPES.keys():
+            msg = (
+                f"{log_type} is not a valid log type."
+                f" Provide a custom template or choose from {', '.join(_BUILTIN_ITEM_TYPES.keys())}."
+            )
+            raise ValueError(msg)
 
         self.builtin_template = pkg_resources.resource_filename(
             "assumptions",
