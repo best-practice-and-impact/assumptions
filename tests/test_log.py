@@ -2,7 +2,10 @@ from typing import List
 
 import pytest
 
-from assumptions import Log
+from assumptions.log import Log
+from assumptions.log import LogFindError
+from assumptions.log_items import Assumption
+from assumptions.log_items import Caveat
 from assumptions.log_items import Todo
 
 
@@ -21,11 +24,17 @@ def test_invalid_output_dir():
         Log("assumptions_caveats_log", "/definitely/not/a/real/dir/path")
 
 
-def test_add_log_item_type(basic_log):
-    basic_log.add_log_item_type(Todo)
-    assert isinstance(basic_log.log_item_types[0], Todo)
+@pytest.mark.parametrize("log_item_class", [Todo, Assumption, Caveat])
+def test_add_log_item_type(basic_log, log_item_class):
+    basic_log.add_log_item_type(log_item_class)
+    assert isinstance(basic_log._log_item_types[0], log_item_class)
 
 
 def test_invalid_log_item_type(basic_log):
     with pytest.raises(TypeError):
         basic_log.add_log_item_type(List)
+
+
+def test_find_with_no_types(basic_log):
+    with pytest.raises(LogFindError):
+        basic_log.find_items()
