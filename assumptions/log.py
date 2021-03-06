@@ -14,6 +14,9 @@ from assumptions.log_items import Todo
 class LogError(Exception):
     pass
 
+class LogFindError(Exception):
+    pass
+
 
 _BUILTIN_ITEM_TYPES = {
     "assumptions_caveats_log": [Assumption, Caveat],
