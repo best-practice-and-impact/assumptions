@@ -14,6 +14,7 @@ from assumptions.log_items import Todo
 class LogError(Exception):
     pass
 
+
 class LogFindError(Exception):
     pass
 
@@ -117,7 +118,12 @@ class Log:
                     path.relative_to(search_path.parent).as_posix(),
                 )
 
-    def write_log(self, template_path: str = None, encoding: str = "utf-8"):
+    def write_log(
+        self,
+        template_path: str = None,
+        dry_run: bool = False,
+        encoding: str = "utf-8",
+    ):
         """
         Write log to instance ``log_file_path``. Inserts matched log items into
         markers in the specified template file.
@@ -169,7 +175,8 @@ class Log:
                 print("No change to log items, log not updated.")
                 return False
 
-        print(f"Writing log to: {self._log_file_path}")
-        with open(self._log_file_path, "w", encoding=encoding) as f:
-            f.write(template_content)
+        if not dry_run:
+            print(f"Writing log to: {self._log_file_path}")
+            with open(self._log_file_path, "w", encoding=encoding) as f:
+                f.write(template_content)
         return True
