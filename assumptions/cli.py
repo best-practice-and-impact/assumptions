@@ -50,6 +50,12 @@ def cli():
         default=None,
         help="path to custom log template. Overrides template" " from log argument.",
     )
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="when flag is passed, no output log is generate",
+    )
     args = parser.parse_args()
 
     outfile = args.outfile or f"{args.log_type}.md"
@@ -61,7 +67,7 @@ def cli():
         log.add_log_item_type(item_type_class)
 
     log.find_items(args.path, args.extension)
-    updated = log.write_log(args.template)
+    updated = log.write_log(args.template, args.dry_run)
     if args.log_type == "assumptions_caveats_log":
         if not updated:
             print("\nNUDGE: Have you updated your assumptions and caveats?")

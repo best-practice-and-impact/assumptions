@@ -6,25 +6,25 @@ from pathlib import Path
 
 class _AbstractLogItem(ABC):
     """
-    Log Item class interface, defining the attributes required by any LogItem subclass.
+    :class:`LogItem` interface, defining the attributes required by any :class:`LogItem` subclass.
 
     Methods
     -------
     parse(idx, file_path, item)
-        Parse a single log item, to produce the desired string representation in the output log.
+        parse a single log item, to produce the desired string representation in the output log.
     """
 
     @property
     @abstractmethod
     def search_pattern(self):
-        """The regex pattern used to search for the item."""
+        """abstract property. The regex pattern used to search for the item."""
         pass
 
     @property
     @abstractmethod
     def template_marker(self):
         """
-        The marker used for insertion into a template. Built-in items use
+        abstract property. The marker used for insertion into a template. Built-in items use
         curly braces (e.g. ``{ assumptions }``).
         """
         pass
@@ -33,7 +33,7 @@ class _AbstractLogItem(ABC):
     @abstractmethod
     def empty_message(self):
         """
-        The text to be inserted into the log when no items are found. For
+        abstract property. The text to be inserted into the log when no items are found. For
         example, 'No pokemon references found in this analysis.'.
         """
         pass
@@ -41,9 +41,9 @@ class _AbstractLogItem(ABC):
     @abstractmethod
     def parse(self, idx, file_path, item):
         """
-        Parse a log item into output string for writting to output log. Should
+        abstract method. Parse a log item into output string for writting to output log. Should
         return the output for a single log item, where each item is a match
-        on the item's ``search_pattern``.
+        on the item's :attribute:`search_pattern`.
 
         Parameters
         ----------
@@ -52,8 +52,8 @@ class _AbstractLogItem(ABC):
         file_path
             The relative path to the file where the item is found
         item
-            An item matched using ``search_pattern``. A string, or tuple of strings,
-            depending on number of groups captured in ``search_pattern``.
+            An item matched using :attribute:search_pattern`. A string, or tuple of strings,
+            depending on number of groups captured in :attribute:search_pattern`.
 
         Returns
         -------
@@ -65,7 +65,7 @@ class _AbstractLogItem(ABC):
 
 class LogItem(_AbstractLogItem):
     """
-    Log Item class interface, defining the attributes required by any LogItem subclass.
+    :class:`LogItem` interface, defining the attributes required by any :class:`LogItem` subclass.
 
     Attributes
     ----------
@@ -89,7 +89,7 @@ class LogItem(_AbstractLogItem):
     def find_items(self, text: str, path: Path):
         """
         Search for log items in text. Stores matched items and their file
-        paths in ``parsed_items``.
+        paths in :attribute:`parsed_items`.
 
         Parameters
         ----------
@@ -107,7 +107,7 @@ class LogItem(_AbstractLogItem):
 
     def parse_items(self):
         """
-        Parse each matched item into a string, ready to be inserted into output
+        parse each matched item into a string, ready to be inserted into output
         content.
         """
         self.parsed_items += [

@@ -32,4 +32,5 @@ Assumptions will generate a Markdown assumptions logs for your documentation:
    :maxdepth: 2
 
    usage.rst
+   example/index.rst
    customising/index.rst
