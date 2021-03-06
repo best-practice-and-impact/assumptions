@@ -33,7 +33,7 @@ class Log:
     Methods
     -------
     add_log_item_type(log_item)
-        add a ``LogItem`` class, for use when searching for log items.
+        add a :class:`LogItem` subclass, for use when searching for log items.
     find_items(relative_search_path='', extension='')
         recursively search files under the specificed path for log items.
         Current directory and all file extensions by default.
@@ -70,7 +70,7 @@ class Log:
 
     def add_log_item_type(self, log_item: LogItem):
         """
-        Add a ``LogItem`` to the log. These parsers provide the regex pattern for searching
+        Add a :class:`LogItem` subclass to the log. These parsers provide the regex pattern for searching
         for items, the marker for insertion into templates and a handler method
         for parsing items before inserting them into the template.
 
@@ -87,9 +87,9 @@ class Log:
 
     def find_items(self, relative_search_path: str = "", extension: str = ""):
         """
-        Recursive directory search for each ``log_item`` ``search_pattern``.
-        Optionally searches a specific file extension.
-        Captures relative path to file containing item and item content.
+        Recursive directory search for the :attribute:`search_pattern` of each :attribute:`log_item`.
+        Optionally searches a specific file extension. Also provides the
+        relative path to current file.
 
         Parameters
         ----------
@@ -125,7 +125,7 @@ class Log:
         encoding: str = "utf-8",
     ):
         """
-        Write log to instance ``log_file_path``. Inserts matched log items into
+        Write log to instance :attribute:`log_file_path`. Inserts matched log items into
         markers in the specified template file.
 
         Paramters

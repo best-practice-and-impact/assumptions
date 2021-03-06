@@ -6,4 +6,4 @@ __pycache__
 *.pyc
 .DS_Store
 build
-example/*.md
+**/example/*.md
