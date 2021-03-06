@@ -3,7 +3,7 @@ from typing import List
 import pytest
 
 from assumptions.log import Log
-from assumptions.log import LogFindError
+from assumptions.log import LogError
 from assumptions.log_items import Assumption
 from assumptions.log_items import Caveat
 from assumptions.log_items import Todo
@@ -36,5 +36,5 @@ def test_invalid_log_item_type(basic_log):
 
 
 def test_find_with_no_types(basic_log):
-    with pytest.raises(LogFindError):
+    with pytest.raises(LogError):
         basic_log.find_items()
