@@ -81,7 +81,13 @@ def pre_build_handler(app, docname):
     import subprocess
 
     subprocess.run(
-        ["assumptions", "-e", ".py", "-o", "source/example/assumptions_caveats_log.md"],
+        [
+            "assumptions",
+            "-e",
+            ".py",
+            "-o",
+            "docs/source/example/assumptions_caveats_log.md",
+        ],
     )
     subprocess.run(
         [
@@ -89,7 +95,7 @@ def pre_build_handler(app, docname):
             "-e",
             ".py",
             "-o",
-            "source/example/todo_list.md",
+            "docs/source/example/todo_list.md",
             "-l",
             "todo_list",
         ],
