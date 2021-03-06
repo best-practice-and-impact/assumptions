@@ -1,16 +1,8 @@
 #!/usr/bin/env python
 import argparse
 
+from assumptions.log import _BUILTIN_ITEM_TYPES
 from assumptions.log import Log
-from assumptions.log_items import Assumption
-from assumptions.log_items import Caveat
-from assumptions.log_items import Todo
-
-
-BUILTIN_ITEM_TYPES = {
-    "assumptions_caveats_log": [Assumption, Caveat],
-    "todo_list": [Todo],
-}
 
 
 def cli():
@@ -60,20 +52,12 @@ def cli():
     )
     args = parser.parse_args()
 
-    # Validation
-    if args.log_type not in BUILTIN_ITEM_TYPES.keys():
-        msg = (
-            f"{args.log_type} is not a valid log type."
-            f" Choose from {', '.join(BUILTIN_ITEM_TYPES.keys())}."
-        )
-        raise ValueError(msg)
-
     outfile = args.outfile or f"{args.log_type}.md"
 
     # Generate log
     log = Log(args.log_type, outfile)
 
-    for item_type_class in BUILTIN_ITEM_TYPES[args.log_type]:
+    for item_type_class in _BUILTIN_ITEM_TYPES[args.log_type]:
         log.add_log_item_type(item_type_class)
 
     log.find_items(args.path, args.extension)

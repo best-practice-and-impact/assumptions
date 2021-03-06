@@ -5,30 +5,52 @@ from pathlib import Path
 
 import pkg_resources
 
+from assumptions.log_items import Assumption
+from assumptions.log_items import Caveat
 from assumptions.log_items import LogItem
+from assumptions.log_items import Todo
 
 
 class FileReadError(Exception):
     pass
 
 
+class LogFindError(Exception):
+    pass
+
+
+_BUILTIN_ITEM_TYPES = {
+    "assumptions_caveats_log": [Assumption, Caveat],
+    "todo_list": [Todo],
+}
+
+
 class Log:
     """
-    Carries out file search and carried out marker replacement in templates.
+    Searches files for log items and writes log items to output logs.
     """
 
-    def __init__(self, log_type: str, log_file_path: str):
-        self.assumptions = []
-        self.caveats = []
-        self.log_file_path = Path(log_file_path)
-        if not self.log_file_path.parent.exists():
+    def __init__(
+        self,
+        log_type: str = "assumptions_caveats_log",
+        log_file_path: str = "assumptions_caveats_log.md",
+    ):
+        self._log_file_path = Path(log_file_path)
+        if not self._log_file_path.parent.exists():
             raise FileNotFoundError(
-                f"Output directory does not exist: {self.log_file.parent}",
+                f"Output directory does not exist: {self._log_file_path.parent}",
             )
 
-        self.log_item_types = []
+        self._log_item_types = []
 
-        self.builtin_template = pkg_resources.resource_filename(
+        if log_type not in _BUILTIN_ITEM_TYPES.keys():
+            msg = (
+                f"{log_type} is not a valid log type."
+                f" Choose from {', '.join(_BUILTIN_ITEM_TYPES.keys())}."
+            )
+            raise ValueError(msg)
+
+        self._builtin_template = pkg_resources.resource_filename(
             "assumptions",
             f"templates/{log_type}.md",
         )
@@ -43,16 +65,16 @@ class Log:
             raise TypeError(
                 "Log item must be a subclass of `assumptions.LogItem`",
             )
-        self.log_item_types.append(log_item())
+        self._log_item_types.append(log_item())
 
-    def find_items(self, relative_search_path: str, extension: str):
+    def find_items(self, relative_search_path: str = "", extension: str = ""):
         """
         Recursive directory search for each ``log_item`` ``search_pattern``.
         Optionally searches a specific file extension.
         Captures relative path to file containing item and item content.
         """
-        if len(self.log_item_types) == 0:
-            raise ValueError("No `log_items` have been added to the Log.")
+        if len(self._log_item_types) == 0:
+            raise LogFindError("No `log_items` have been added to the Log.")
 
         current_dir = Path(os.getcwd())
         search_path = (current_dir / relative_search_path).resolve()
@@ -65,7 +87,7 @@ class Log:
             except FileReadError:
                 print(f"File could not be read, skipping: {path}")
 
-            for log_item in self.log_item_types:
+            for log_item in self._log_item_types:
                 for item in re.findall(
                     log_item.search_pattern,
                     file_contents,
@@ -82,7 +104,7 @@ class Log:
         """
         if template is None:
             # Default is assumptions and caveats from package
-            template = self.builtin_template
+            template = self._builtin_template
         with open(template, "r") as f:
             template_content = f.read()
 
@@ -92,7 +114,7 @@ class Log:
                 datetime.datetime.today().strftime(r"%d/%m/%Y"),
             )
 
-        for log_item_type in self.log_item_types:
+        for log_item_type in self._log_item_types:
             log_item_type.parse_items()
             items = log_item_type.parsed_items
 
@@ -105,9 +127,9 @@ class Log:
                 "\n".join(items).strip(),
             )
 
-        if self.log_file_path.exists():
+        if self._log_file_path.exists():
             print("Log exists, checking for changes...")
-            with open(self.log_file_path, "r") as f:
+            with open(self._log_file_path, "r") as f:
                 old_template_content = f.read()
 
             # Check if output has changed, other than dates
@@ -120,7 +142,7 @@ class Log:
                 print("No change to log items, log not updated.")
                 return False
 
-        print(f"Writing log to: {self.log_file_path}")
-        with open(self.log_file_path, "w") as f:
+        print(f"Writing log to: {self._log_file_path}")
+        with open(self._log_file_path, "w") as f:
             f.write(template_content)
         return True
