@@ -74,7 +74,7 @@ html_css_files = [
 ]
 
 
-def pre_build_handler(app, docname):
+def pre_build_handler(app, config):
     """
     Run assumptions to generate example log outputs.
     """
@@ -86,7 +86,7 @@ def pre_build_handler(app, docname):
             "-e",
             ".py",
             "-o",
-            "docs/source/example/assumptions_caveats_log.md",
+            f"{app.srcdir}/example/assumptions_caveats_log.md",
         ],
     )
     subprocess.run(
@@ -95,7 +95,7 @@ def pre_build_handler(app, docname):
             "-e",
             ".py",
             "-o",
-            "docs/source/example/todo_list.md",
+            f"{app.srcdir}/example/todo_list.md",
             "-l",
             "todo_list",
         ],
