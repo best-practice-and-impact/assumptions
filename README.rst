@@ -2,7 +2,7 @@ assumptions
 ===========
 
 .. image:: https://badge.fury.io/py/assumptions.svg
-    :target: https://badge.fury.io/py/assumptions
+    :target: https://pypi.org/project/assumptions/
     :alt: PyPI release
 
 .. image:: https://github.com/foster999/assumptions/workflows/tests/badge.svg
