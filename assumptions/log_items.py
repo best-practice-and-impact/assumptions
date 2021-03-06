@@ -1,12 +1,17 @@
 import re
 from abc import ABC
 from abc import abstractmethod
+from pathlib import Path
 
 
-class AbstractLogItem(ABC):
+class _AbstractLogItem(ABC):
     """
-    Abstract Log Item class.
-    Defines the classes required by any new Log Item.
+    Log Item class interface, defining the attributes required by any LogItem subclass.
+
+    Methods
+    -------
+    parse(idx, file_path, item)
+        Parse a single log item, to produce the desired string representation in the output log.
     """
 
     @property
@@ -18,48 +23,87 @@ class AbstractLogItem(ABC):
     @property
     @abstractmethod
     def template_marker(self):
-        """The marker used for insertion into a template."""
+        """
+        The marker used for insertion into a template. Built-in items use
+        curly braces (e.g. ``{ assumptions }``).
+        """
         pass
 
     @property
     @abstractmethod
     def empty_message(self):
-        """The text to be inserted into the log when no items are found."""
+        """
+        The text to be inserted into the log when no items are found. For
+        example, 'No pokemon references found in this analysis.'.
+        """
         pass
 
     @abstractmethod
-    def parser(self, idx, file_path, item):
+    def parse(self, idx, file_path, item):
         """
-        The function used to handle matches from the search pattern.
-        Should return the output for a single item, where each item is a match
-        on the ``search_pattern``.
+        Parse a log item into output string for writting to output log. Should
+        return the output for a single log item, where each item is a match
+        on the item's ``search_pattern``.
 
         Parameters
         ----------
-
         idx
             The index of the item in the list of captured items
-        file
+        file_path
             The relative path to the file where the item is found
         item
-            The item matching the search pattern
+            An item matched using ``search_pattern``. A string, or tuple of strings,
+            depending on number of groups captured in ``search_pattern``.
 
+        Returns
+        -------
+        str
+            String representation of item, for use in output log file.
         """
         pass
 
 
-class LogItem(ABC):
+class LogItem(_AbstractLogItem):
     """
-    Base Log Item class. Subclasses must implement the abstract properties and
-    ``parser`` method from the ``AbstractLogItem``.
+    Log Item class interface, defining the attributes required by any LogItem subclass.
+
+    Attributes
+    ----------
+    matched_items
+        list of log item matches that have been found.
+    parsed_items
+        list of parsed log items, which can be inserted into log outputs.
+
+    Methods
+    -------
+    find_items(text, path)
+        search for and store log items from text.
+    parse_items()
+        parse matched log items into strings.
     """
 
     def __init__(self):
         self.matched_items = []
         self.parsed_items = []
 
-    def add_matched_item(self, item):
-        self.matched_items.append(item)
+    def find_items(self, text: str, path: Path):
+        """
+        Search for log items in text. Stores matched items and their file
+        paths in ``parsed_items``.
+
+        Parameters
+        ----------
+        text
+            a string of text to be searched for log items.
+        path
+            path to file containing text, for use in parsing.
+        """
+        for item in re.findall(
+            self.search_pattern,
+            text,
+            re.MULTILINE | re.IGNORECASE,
+        ):
+            self.matched_items.append((path, item))
 
     def parse_items(self):
         """
@@ -67,13 +111,16 @@ class LogItem(ABC):
         content.
         """
         self.parsed_items += [
-            self.parser(idx, filepath, item)
+            self.parse(idx, filepath, item)
             for idx, (filepath, item) in enumerate(self.matched_items)
         ]
         self.matched_items = []
 
 
 class Assumption(LogItem):
+    """
+    Matches and parses assumptions from hash code comments.
+    """
 
     search_pattern = (
         # Get indentation level and Assumption title
@@ -89,7 +136,7 @@ class Assumption(LogItem):
     template_marker = "{ assumptions }"
     empty_message = "Currently no assumptions in this analysis.\n"
 
-    def parser(self, idx, file_path, item):
+    def parse(self, idx, file_path, item):
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
             f"\n?{item[0]}#",
@@ -120,6 +167,9 @@ class Assumption(LogItem):
 
 
 class Caveat(LogItem):
+    """
+    Matches and parses caveats from hash code comments.
+    """
 
     search_pattern = (
         # Get indentation level and Caveat title
@@ -133,7 +183,7 @@ class Caveat(LogItem):
     template_marker = "{ caveats }"
     empty_message = "Currently no caveats in this analysis.\n"
 
-    def parser(self, idx, file_path, item):
+    def parse(self, idx, file_path, item):
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
             f"\n?{item[0]}#",
@@ -162,6 +212,9 @@ class Caveat(LogItem):
 
 
 class Todo(LogItem):
+    """
+    Matches and parses todos from hash code comments.
+    """
 
     search_pattern = (
         # Get indentation level
@@ -175,7 +228,7 @@ class Todo(LogItem):
     template_marker = "{ todos }"
     empty_message = "Great, there's nothing to do!\n"
 
-    def parser(self, idx, file_path, item):
+    def parse(self, idx, file_path, item):
         todo_item = item[1] + re.sub(
             # Remove indentation and comment hash from todo item
             f"\n?{item[0]}#",
