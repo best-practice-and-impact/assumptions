@@ -1,4 +1,5 @@
 assumptions
 sphinx
+myst-parser
 pydata-sphinx-theme
 jupyter_sphinx

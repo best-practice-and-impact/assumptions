@@ -22,7 +22,9 @@ Run the command line tool to generate help documentation:
 
     import subprocess
 
-    print(subprocess.run(["assumptions", "-h"], capture_output=True).stdout.decode())
+    print(
+        subprocess.run(["assumptions", "-h"], stdout=subprocess.PIPE).stdout.decode("utf-8")
+    )
 
 
 Assumptions and caveats log
@@ -55,6 +57,10 @@ By default, the assumptions command line tool recursively searches the current d
 
     import subprocess
 
-    print(subprocess.run(["assumptions"], capture_output=True).stdout.decode())
+    print(
+        subprocess.run(
+            ["assumptions", "-e", ".py", "--dry-run"], stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
+    )
 
 If the output log already exists, assumptions checks for any changes. If your documented assumptions and caveats haven't changed, assumptions doesn't overwrite the log to preserve the "last updated" date. Instead, it gives you a friendly nudge, just in case you've forgotten to update them.

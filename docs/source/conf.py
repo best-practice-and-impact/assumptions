@@ -26,12 +26,14 @@ release = __version__
 
 
 # -- General configuration ---------------------------------------------------
-language = "en-GB"
+language = "en"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "jupyter_sphinx",
+    "sphinx.ext.napoleon",  # For using numpydocs style docstings
+    "jupyter_sphinx",  # For showing code outputs
+    "myst_parser",  # For including .md files
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
 ]
@@ -70,3 +72,29 @@ html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
 ]
+
+
+def pre_build_handler(app, docname):
+    """
+    Run assumptions to generate example log outputs.
+    """
+    import subprocess
+
+    subprocess.run(
+        ["assumptions", "-e", ".py", "-o", "source/example/assumptions_caveats_log.md"],
+    )
+    subprocess.run(
+        [
+            "assumptions",
+            "-e",
+            ".py",
+            "-o",
+            "source/example/todo_list.md",
+            "-l",
+            "todo_list",
+        ],
+    )
+
+
+def setup(app):
+    app.connect("config-inited", pre_build_handler)

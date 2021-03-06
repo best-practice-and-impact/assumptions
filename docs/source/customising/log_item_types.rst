@@ -21,7 +21,7 @@ This base class is a subclass of the ``AbstractLogItem`` class, which defines th
 ``AbstractLogItem`` interface
 -----------------------------
 
-.. automodule:: assumptions.log_items.AbstractLogItem
+.. automodule:: assumptions.log_items._AbstractLogItem
     :members:
 
 
