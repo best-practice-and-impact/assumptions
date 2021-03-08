@@ -64,7 +64,7 @@ html_context = {
     "github_user": "foster999",
     "github_repo": "assumptions",
     "github_version": "main",
-    "doc_path": "docs",
+    "doc_path": "docs/source",
 }
 
 html_static_path = ["_static"]
