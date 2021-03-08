@@ -54,7 +54,7 @@ def cli():
         "-d",
         "--dry-run",
         action="store_true",
-        help="when flag is passed, no output log is generate",
+        help="when flag is passed, no output log is generated.",
     )
     args = parser.parse_args()
 
