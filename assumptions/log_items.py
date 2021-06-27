@@ -151,8 +151,8 @@ class Assumption(LogItem):
     def parse(self, idx, file_path, item):
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
-            f"\n?{item[0]}#'?",
-            "",
+            f"\n?{item[0]}#'? ?",
+            "\n",
             item[4],
         )
         detailed_description = re.sub(
@@ -206,8 +206,8 @@ class Caveat(LogItem):
     def parse(self, idx, file_path, item):
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
-            f"\n?{item[0]}#'?",
-            "",
+            f"\n?{item[0]}#'? ?",
+            "\n",
             item[2],
         )
         detailed_description = re.sub(
@@ -244,6 +244,11 @@ class Debt(LogItem):
             # with the same indent and comment
             r"(\1# ?(?:.|\n)*?)^(?!\1#)"
         ),
+        (
+            # R roxygen format
+            r"^([ \t]*)#\' @section Debt: ?(.+)\n"
+            r"(\1#\' (?:.|\n)*?)?^(?!\1#\')"
+        ),
     ]
 
     template_marker = "{ debt }"
@@ -252,8 +257,8 @@ class Debt(LogItem):
     def parse(self, idx, file_path, item):
         debt_item = re.sub(
             # Remove indentation and comment hash from todo item
-            f"\n?{item[0]}#",
-            "",
+            f"\n?{item[0]}#'? ?",
+            "\n",
             item[2],
         )
         debt_item = re.sub(
