@@ -4,11 +4,11 @@ User guide
 Installation and usage
 ----------------------
 
-The assumptions package can currently be installed from GitHub:
+The assumptions package can be installed from PyPI:
 
 .. code-block:: sh
 
-    pip install git+https://github.com/foster999/assumptions.git
+    pip install assumptions
 
 Run the command line tool to generate help documentation:
 
@@ -26,9 +26,24 @@ Run the command line tool to generate help documentation:
         subprocess.run(["assumptions", "-h"], stdout=subprocess.PIPE).stdout.decode("utf-8")
     )
 
+We recommend including assumptions in `pre-commit <https://pre-commit.com>`_ configurations:
 
-Assumptions and caveats log
----------------------------
+.. code-block:: yaml
+
+    repos:
+    -   repo: https://github.com/foster999/assumptions
+        rev: 0.2.0
+        hooks:
+        -   id: assumptions
+
+This ensures that up-to-date logs are included in your project's version control.
+
+Alternatively, the command line tool can be called as part of continuous integration workflows.
+
+Assumptions and caveats
+-----------------------
+
+By default, assumptions will recursively search the current directory for assumptions and caveats, before writing the log to the same directory.
 
 Assumptions and caveats should be written in you code as hashed comments:
 
