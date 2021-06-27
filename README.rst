@@ -22,7 +22,7 @@ The Python package can be installed from PyPI:
 
 .. code-block:: sh
 
-    pip install assumption
+    pip install assumptions
 
 
 Run the command line tool to generate help documentation:
