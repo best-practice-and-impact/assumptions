@@ -16,6 +16,13 @@ The default template displays a list of assumptions and caveats. It also indicat
 .. literalinclude:: ../../../assumptions/templates/assumptions_caveats_log.md
 
 
+Technical debt log
+------------------
+
+This basic template creates a Markdown checklist from technical debt items that have been recorded in comments in your code.
+
+.. literalinclude:: ../../../assumptions/templates/technical_debt_log.md
+
 Todo list
 ---------
 

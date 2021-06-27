@@ -231,6 +231,52 @@ class Caveat(LogItem):
         return caveat_content
 
 
+class Debt(LogItem):
+    """
+    Matches and parses technical debt items from hash code comments.
+    """
+
+    search_patterns = [
+        (
+            # Get indentation level and title
+            r"^([ \t]*)# ?Debt: (.+)\n?"
+            # Lazily match everything following, till there's a line that doesn't start
+            # with the same indent and comment
+            r"(\1# ?(?:.|\n)*?)^(?!\1#)"
+        ),
+    ]
+
+    template_marker = "{ debt }"
+    empty_message = "Looks like we're debt free!\n"
+
+    def parse(self, idx, file_path, item):
+        debt_item = re.sub(
+            # Remove indentation and comment hash from todo item
+            f"\n?{item[0]}#",
+            "",
+            item[2],
+        )
+        debt_item = re.sub(
+            # Reduce whitespace to single spaces and strip
+            "[ ]{2,}",
+            " ",
+            debt_item.strip(),
+        )
+
+        debt_content = "\n".join(
+            [
+                f"### Debt {idx + 1}: {item[1]}",
+                "",
+                # Relative path to file
+                f"Location: `{file_path}`",
+                "",
+                f"{debt_item}",
+                "",
+            ],
+        )
+        return debt_content
+
+
 class Todo(LogItem):
     """
     Matches and parses todos from hash code comments.
