@@ -27,6 +27,8 @@ Assumptions will generate a Markdown assumptions logs for your documentation:
 
     Detailed description on one line or many.
 
+By the way, :ref:`assumptions can also be customised<customising>` to find any text pattern and insert matches into any template text document.
+
 .. toctree::
    :caption: Documentation
    :maxdepth: 2

@@ -6,6 +6,7 @@ This sections demonstrates what output logs look like when included in documenta
 .. toctree::
     :caption: Examples
     :maxdepth: 1
+    :hidden:
 
     assumptions_caveats_log.md
     todo_list.md

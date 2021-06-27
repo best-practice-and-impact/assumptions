@@ -3,7 +3,7 @@ Log item types
 
 Log item types are classes that define items that you would like to capture in a log. These classes store:
 
-* the pattern used to capture your log items,
+* a list of regular expression patterns used to capture your log items,
 * the placeholder used in your templates to insert the log items,
 * the text displayed in the template if no log items are found,
 * and a parser method to process a captured log item into the output text that is inserted into your template.

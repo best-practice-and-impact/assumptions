@@ -16,8 +16,8 @@ class _AbstractLogItem(ABC):
 
     @property
     @abstractmethod
-    def search_pattern(self):
-        """abstract property. The regex pattern used to search for the item."""
+    def search_patterns(self):
+        """abstract property. A list of regex patterns used to search for the item."""
         pass
 
     @property
@@ -98,12 +98,13 @@ class LogItem(_AbstractLogItem):
         path
             path to file containing text, for use in parsing.
         """
-        for item in re.findall(
-            self.search_pattern,
-            text,
-            re.MULTILINE | re.IGNORECASE,
-        ):
-            self.matched_items.append((path, item))
+        for pattern in self.search_patterns:
+            for item in re.findall(
+                pattern,
+                text,
+                re.MULTILINE | re.IGNORECASE,
+            ):
+                self.matched_items.append((path, item))
 
     def parse_items(self):
         """
@@ -122,16 +123,27 @@ class Assumption(LogItem):
     Matches and parses assumptions from hash code comments.
     """
 
-    search_pattern = (
-        # Get indentation level and Assumption title
-        r"^([ \t]*)# ?Assumption: ?(.+)\n"
-        # Short or long from RAG ratings
-        r"^\1# ?Q(?:uality)?: ?(.+)\n"
-        r"^\1# ?I(?:mpact)?: ?(.+)\n"
-        # Lazily match everything following, till there's a line that doesn't
-        # start with the same indent and comment
-        r"(\1# ?(?:.|\n)*?)^(?!\1#)"
-    )
+    search_patterns = [
+        (
+            # Genereric hash comments
+            # Get indentation level and Assumption title
+            r"^([ \t]*)# ?Assumption: ?(.+)\n"
+            # Short or long from RAG ratings
+            r"^\1# ?Q(?:uality)?: ?(.+)\n"
+            r"^\1# ?I(?:mpact)?: ?(.+)\n"
+            # Lazily match everything following, till there's a line that doesn't
+            # start with the same indent and comment
+            r"(\1# ?(?:.|\n)*?)^(?!\1#)"
+        ),
+        (
+            # R roxygen format
+            # As above, using #' notation
+            r"^([ \t]*)#' @section Assumption: ?(.+)\n"
+            r"^\1#' Q(?:uality)?: ?(.+)\n"
+            r"^\1#' I(?:mpact)?: ?(.+)\n"
+            r"(\1#' (?:.|\n)*?)^(?!\1#')"
+        ),
+    ]
 
     template_marker = "{ assumptions }"
     empty_message = "Currently no assumptions in this analysis.\n"
@@ -139,7 +151,7 @@ class Assumption(LogItem):
     def parse(self, idx, file_path, item):
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
-            f"\n?{item[0]}#",
+            f"\n?{item[0]}#'?",
             "",
             item[4],
         )
@@ -171,14 +183,22 @@ class Caveat(LogItem):
     Matches and parses caveats from hash code comments.
     """
 
-    search_pattern = (
-        # Get indentation level and Caveat title
-        r"^([ \t]*)# ?Caveat: ?(.+)\n"
-        # Lazily match everything following, till there's a line that doesn't start
-        # with the same indent and comment
-        # Long description is optional, as caveats might be one liners
-        r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
-    )
+    search_patterns = [
+        (
+            # Generic hash comments
+            # Get indentation level and Caveat title
+            r"^([ \t]*)# ?Caveat: ?(.+)\n"
+            # Lazily match everything following, till there's a line that doesn't start
+            # with the same indent and comment
+            # Long description is optional, as caveats might be one liners
+            r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
+        ),
+        (
+            # R roxygen format
+            r"^([ \t]*)#\' @section Caveat: ?(.+)\n"
+            r"(\1#\' (?:.|\n)*?)?^(?!\1#\')"
+        ),
+    ]
 
     template_marker = "{ caveats }"
     empty_message = "Currently no caveats in this analysis.\n"
@@ -186,7 +206,7 @@ class Caveat(LogItem):
     def parse(self, idx, file_path, item):
         detailed_description = re.sub(
             # Remove indentation and comment hash from detailed description
-            f"\n?{item[0]}#",
+            f"\n?{item[0]}#'?",
             "",
             item[2],
         )
@@ -216,14 +236,16 @@ class Todo(LogItem):
     Matches and parses todos from hash code comments.
     """
 
-    search_pattern = (
-        # Get indentation level
-        r"^([ \t]*)# ?TODO: (.+)\n?"
-        # Lazily match everything following, till there's a line that doesn't start
-        # with the same indent and comment
-        # Long description is optional, as todos are often one liners
-        r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
-    )
+    search_patterns = [
+        (
+            # Get indentation level
+            r"^([ \t]*)# ?TODO: (.+)\n?"
+            # Lazily match everything following, till there's a line that doesn't start
+            # with the same indent and comment
+            # Long description is optional, as todos are often one liners
+            r"(\1# ?(?:.|\n)*?)?^(?!\1#)"
+        ),
+    ]
 
     template_marker = "{ todos }"
     empty_message = "Great, there's nothing to do!\n"
