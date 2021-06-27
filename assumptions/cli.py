@@ -63,7 +63,13 @@ def cli():
     # Generate log
     log = Log(args.log_type, outfile)
 
-    for item_type_class in _BUILTIN_ITEM_TYPES[args.log_type]:
+    item_types = _BUILTIN_ITEM_TYPES.get(args.log_type)
+    if item_types is None:
+        raise ValueError(
+            f"{args.log_type} is not a build in log type. Try one of: {','.join(_BUILTIN_ITEM_TYPES.keys())}",
+        )
+
+    for item_type_class in item_types:
         log.add_log_item_type(item_type_class)
 
     log.find_items(args.path, args.extension)

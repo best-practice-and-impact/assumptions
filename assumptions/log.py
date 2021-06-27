@@ -7,6 +7,7 @@ import pkg_resources
 
 from assumptions.log_items import Assumption
 from assumptions.log_items import Caveat
+from assumptions.log_items import Debt
 from assumptions.log_items import LogItem
 from assumptions.log_items import Todo
 
@@ -21,6 +22,7 @@ class LogFindError(Exception):
 
 _BUILTIN_ITEM_TYPES = {
     "assumptions_caveats_log": [Assumption, Caveat],
+    "technical_debt_log": [Debt],
     "todo_list": [Todo],
 }
 

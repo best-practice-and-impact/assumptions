@@ -95,6 +95,17 @@ def pre_build_handler(app, config):
             "-e",
             ".py",
             "-o",
+            f"{app.srcdir}/example/technical_debt_log.md",
+            "-l",
+            "technical_debt_log",
+        ],
+    )
+    subprocess.run(
+        [
+            "assumptions",
+            "-e",
+            ".py",
+            "-o",
             f"{app.srcdir}/example/todo_list.md",
             "-l",
             "todo_list",
