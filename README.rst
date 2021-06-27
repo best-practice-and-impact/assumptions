@@ -39,7 +39,7 @@ We recommend including assumptions in `pre-commit <https://pre-commit.com>`_ con
 
     repos:
     -   repo: https://github.com/foster999/assumptions
-        rev: 1.0.0
+        rev: 1.1.0
         hooks:
         -   id: assumptions
 
